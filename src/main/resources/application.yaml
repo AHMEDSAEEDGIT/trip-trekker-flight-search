@@ -1,12 +1,15 @@
 spring:
   application:
     name: flight-search
+  config:
+    import: optional:file:.env[.properties]
 flight:
   providers:
     duffel:
       base-url: https://api.duffel.com
       token: ${DUFFEL_ACCESS_TOKEN:}
       timeout: 5000
+      max-response-size: 10485760
 #    amadeus:
 #      base-url: https://test.api.amadeus.com  # Example for Amadeus sandbox
 #      client-id: ${AMADEUS_CLIENT_ID}

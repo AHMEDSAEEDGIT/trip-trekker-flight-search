@@ -49,13 +49,21 @@ public class DuffelResponseWrapper {
     @Getter
     @Setter
     public static class DuffelSegment {
-        private String origin;
-        private String destination;
+        private DuffelLocation origin;
+        private DuffelLocation destination;
         @JsonProperty("departing_at")
         private String departingAt;
         @JsonProperty("arriving_at")
         private String arrivingAt;
         @JsonProperty("flight_number")
         private String flightNumber;
+    }
+
+    @Getter
+    @Setter
+    public static class DuffelLocation {
+        @JsonProperty("iata_code")
+        private String iataCode;
+        private String name;
     }
 }

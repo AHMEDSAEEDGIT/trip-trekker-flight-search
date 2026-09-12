@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,8 +15,8 @@ public record FlightSearchRequest(
         @NotBlank String destination,
         @NotNull @FutureOrPresent LocalDate departureDate,
         @FutureOrPresent LocalDate returnDate,
-        @NotEmpty @Valid List<Passenger> passengers,
-        @NotNull CabinClass cabinClass
+        @Valid List<Passenger> passengers,
+        @NotNull Cabin cabinClass
         ) {
     public FlightSearchRequest {
         passengers = passengers != null ? List.copyOf(passengers) : List.of();

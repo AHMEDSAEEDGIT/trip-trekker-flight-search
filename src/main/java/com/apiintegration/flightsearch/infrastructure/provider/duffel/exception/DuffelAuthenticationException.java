@@ -1,4 +1,4 @@
-package com.apiintegration.flightsearch.infrastructure.provider.duffel;
+package com.apiintegration.flightsearch.infrastructure.provider.duffel.exception;
 
 public class DuffelAuthenticationException extends RuntimeException {
     public DuffelAuthenticationException() {

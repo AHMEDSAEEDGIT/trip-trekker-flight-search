@@ -38,21 +38,30 @@ public class DuffelResponseMapper {
             }
 
             // Map Segments (flattening slices into segments)
-            List<FlightSegment> segments = duffelOffer.getSlices().stream()
+            List<FlightSegment> segments = duffelOffer.getSlices() == null ? List.of() : duffelOffer.getSlices().stream()
+                    .filter(slice -> slice != null && slice.getSegments() != null)
                     .flatMap(slice -> slice.getSegments().stream())
+                    .filter(ds -> ds != null)
                     .map(ds -> {
                         FlightSegment seg = new FlightSegment();
-                        seg.setOrigin(ds.getOrigin());
-                        seg.setDestination(ds.getDestination());
-                        seg.setDepartureTime(LocalDateTime.parse(ds.getDepartingAt()));
-                        seg.setArrivalTime(LocalDateTime.parse(ds.getArrivingAt()));
+                        seg.setOrigin(locationCode(ds.getOrigin()));
+                        seg.setDestination(locationCode(ds.getDestination()));
+                        seg.setDepartureTime(parseDateTime(ds.getDepartingAt()));
+                        seg.setArrivalTime(parseDateTime(ds.getArrivingAt()));
                         seg.setFlightNumber(ds.getFlightNumber());
-//                        seg.setFlightOffer(offer);
                         return seg;
                     }).collect(Collectors.toList());
 
             offer.setSegments(segments);
             return offer;
         }).collect(Collectors.toList());
+    }
+
+    private String locationCode(DuffelResponseWrapper.DuffelLocation location) {
+        return location == null ? null : location.getIataCode();
+    }
+
+    private LocalDateTime parseDateTime(String value) {
+        return value == null ? null : LocalDateTime.parse(value);
     }
 }

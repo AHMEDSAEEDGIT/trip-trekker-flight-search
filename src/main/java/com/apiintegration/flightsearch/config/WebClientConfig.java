@@ -21,6 +21,8 @@ public class WebClientConfig {
                 .defaultHeader("Duffel-Version", "v2")
                 .defaultHeader("Content-Type", "application/json")
                 .defaultHeader("Accept", "application/json")
+                .codecs(configurer -> configurer.defaultCodecs()
+                    .maxInMemorySize(properties.getMaxResponseSize()))
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
     }

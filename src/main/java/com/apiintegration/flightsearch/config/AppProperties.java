@@ -13,4 +13,5 @@ public class AppProperties {
     private String baseUrl;
     private String token;
     private int timeout;
+    private int maxResponseSize;
 }
