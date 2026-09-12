@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: flight-search
+flight:
+  providers:
+    duffel:
+      base-url: https://api.duffel.com
+      token: ${DUFFEL_ACCESS_TOKEN:}
+      timeout: 5000
+#    amadeus:
+#      base-url: https://test.api.amadeus.com  # Example for Amadeus sandbox
+#      client-id: ${AMADEUS_CLIENT_ID}
+#      client-secret: ${AMADEUS_CLIENT_SECRET}
+#      timeout: 5000
+logging:
+  level:
+    root: INFO
+    com.apiintegration.flightsearch: DEBUG
