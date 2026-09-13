@@ -1,5 +1,6 @@
 package com.apiintegration.flightsearch.infrastructure.provider.duffel;
 
+import com.apiintegration.flightsearch.config.AppProperties;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.dto.DuffelOfferRequestPayload;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.exception.DuffelApiException;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.exception.DuffelAuthenticationException;
@@ -16,10 +17,12 @@ import java.time.Duration;
 public class DuffelClient {
     private final WebClient duffelWebClient;
     private final DuffelAuthService authService;
+    private final AppProperties properties;
 
-    public DuffelClient(WebClient duffelWebClient, DuffelAuthService authService) {
+    public DuffelClient(WebClient duffelWebClient, DuffelAuthService authService, AppProperties properties) {
         this.duffelWebClient = duffelWebClient;
         this.authService = authService;
+        this.properties = properties;
     }
     public String getAircraft(String aircraftId) {
         return duffelWebClient.get()
@@ -47,7 +50,7 @@ public class DuffelClient {
                 .onStatus(status -> status.is5xxServerError(),
                         response -> Mono.error(new DuffelApiException("Duffel server is down or experiencing issues")))
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(5000))
+                .timeout(Duration.ofMillis(properties.getTimeout()))
                 .onErrorResume(java.util.concurrent.TimeoutException.class, ex -> {
                     throw new DuffelTimeoutException("Duffel API request timed out");
                 })

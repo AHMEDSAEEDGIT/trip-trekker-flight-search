@@ -26,4 +26,19 @@ public class WebClientConfig {
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
     }
+
+    @Bean
+    public WebClient flightApiWebClient(FlightApiProperties properties){
+        HttpClient httpClient = HttpClient.create()
+                .responseTimeout(Duration.ofMillis(properties.getTimeout()));
+
+        return WebClient.builder()
+                .baseUrl(properties.getBaseUrl())
+                .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("Accept", "application/json")
+                .codecs(configurer -> configurer.defaultCodecs()
+                        .maxInMemorySize((int) properties.getMaxResponseSize()))
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
+    }
 }

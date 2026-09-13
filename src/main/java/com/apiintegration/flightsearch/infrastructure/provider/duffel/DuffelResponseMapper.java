@@ -8,6 +8,8 @@ import com.apiintegration.flightsearch.infrastructure.provider.duffel.dto.Duffel
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,14 @@ public class DuffelResponseMapper {
     }
 
     private LocalDateTime parseDateTime(String value) {
-        return value == null ? null : LocalDateTime.parse(value);
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        try {
+            return OffsetDateTime.parse(value).toLocalDateTime();
+        } catch (DateTimeParseException ex) {
+            return LocalDateTime.parse(value);
+        }
     }
 }
