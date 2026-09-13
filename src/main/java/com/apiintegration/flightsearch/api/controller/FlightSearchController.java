@@ -1,10 +1,10 @@
 package com.apiintegration.flightsearch.api.controller;
 
 import com.apiintegration.flightsearch.api.dto.request.FlightSearchRequest;
-import com.apiintegration.flightsearch.application.service.FlightSearchService;
+import com.apiintegration.flightsearch.application.port.FlightSearchProvider;
 import com.apiintegration.flightsearch.domain.model.FlightOffer;
-import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,14 +15,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/flights")
-@RequiredArgsConstructor
 public class FlightSearchController {
 
-    private final FlightSearchService flightSearchService;
+    private final FlightSearchProvider flightSearchProvider;
+
+    public FlightSearchController(@Qualifier("flightApiService") FlightSearchProvider flightSearchProvider) {
+        this.flightSearchProvider = flightSearchProvider;
+    }
 
     @PostMapping("/search")
     public ResponseEntity<List<FlightOffer>> searchFlights(@Valid @RequestBody FlightSearchRequest request) {
-        List<FlightOffer> offers = flightSearchService.searchFlights(request);
+        List<FlightOffer> offers = flightSearchProvider.searchFlights(request);
         return ResponseEntity.ok(offers);
     }
 }

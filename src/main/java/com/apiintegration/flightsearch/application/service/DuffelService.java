@@ -1,6 +1,7 @@
 package com.apiintegration.flightsearch.application.service;
 
 import com.apiintegration.flightsearch.api.dto.request.FlightSearchRequest;
+import com.apiintegration.flightsearch.application.port.FlightSearchProvider;
 import com.apiintegration.flightsearch.domain.model.FlightOffer;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.DuffelClient;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.DuffelResponseMapper;
@@ -16,39 +17,40 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FlightSearchService {
+public class DuffelService implements FlightSearchProvider {
     private final DuffelClient duffelClient;
     private final DuffelResponseMapper duffelResponseMapper;
     private final ObjectMapper objectMapper; // Spring Boot's built-in JSON parser
 
     public List<FlightOffer> searchFlights(FlightSearchRequest request) {
+        DuffelOfferRequestPayload payload = DuffelOfferRequestPayload.builder()
+            .data(DuffelOfferRequestPayload.DataWrapper.builder()
+                .slices(List.of(
+                    DuffelOfferRequestPayload.Slice.builder()
+                        .origin(request.origin())
+                        .destination(request.destination())
+                        .departureDate(request.departureDate().toString())
+                        .build()
+                ))
+                .passengers(toDuffelPassengers(request))
+                .cabinClass(request.cabinClass() != null ? request.cabinClass().name().toLowerCase() : "economy")
+                .build())
+            .build();
+
+        String rawJsonResponse = duffelClient.createOfferRequest(payload);
+        DuffelResponseWrapper responseWrapper;
         try {
-            // 1. Build Duffel payload from incoming request
-            DuffelOfferRequestPayload payload = DuffelOfferRequestPayload.builder()
-                    .data(DuffelOfferRequestPayload.DataWrapper.builder()
-                            .slices(List.of(
-                                    DuffelOfferRequestPayload.Slice.builder()
-                                            .origin(request.origin())
-                                            .destination(request.destination())
-                                            .departureDate(request.departureDate().toString())
-                                            .build()
-                            ))
-                                .passengers(toDuffelPassengers(request))
-                            .cabinClass(request.cabinClass() != null ? request.cabinClass().name().toLowerCase() : "economy")
-                            .build())
-                    .build();
+            responseWrapper = objectMapper.readValue(rawJsonResponse, DuffelResponseWrapper.class);
+        } catch (JacksonException e) {
+            throw new com.apiintegration.flightsearch.infrastructure.provider.duffel.exception.DuffelApiException(
+                "Malformed response from Duffel", e);
+        }
 
-            // 2. Call provider and get raw JSON string
-            String rawJsonResponse = duffelClient.createOfferRequest(payload);
-
-            // 3. Convert raw JSON string into the Duffel response wrapper DTO
-            DuffelResponseWrapper responseWrapper = objectMapper.readValue(rawJsonResponse, DuffelResponseWrapper.class);
-
-            // 4. Map into normalized domain models and return
+        try {
             return duffelResponseMapper.mapToDomain(responseWrapper);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to process flight search: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            throw new com.apiintegration.flightsearch.infrastructure.provider.duffel.exception.DuffelApiException(
+                    "Malformed response from Duffel", e);
         }
     }
 
