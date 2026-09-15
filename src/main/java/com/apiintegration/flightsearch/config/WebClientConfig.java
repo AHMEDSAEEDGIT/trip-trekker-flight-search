@@ -12,7 +12,7 @@ import java.time.Duration;
 public class WebClientConfig {
 
     @Bean
-    public WebClient duffelWebClient(AppProperties properties){
+    public WebClient duffelWebClient(DuffelProperties properties){
         HttpClient httpClient = HttpClient.create()
                 .responseTimeout(Duration.ofMillis(properties.getTimeout()));
 
@@ -29,6 +29,21 @@ public class WebClientConfig {
 
     @Bean
     public WebClient flightApiWebClient(FlightApiProperties properties){
+        HttpClient httpClient = HttpClient.create()
+                .responseTimeout(Duration.ofMillis(properties.getTimeout()));
+
+        return WebClient.builder()
+                .baseUrl(properties.getBaseUrl())
+                .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("Accept", "application/json")
+                .codecs(configurer -> configurer.defaultCodecs()
+                        .maxInMemorySize((int) properties.getMaxResponseSize()))
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
+    }
+
+    @Bean
+    public WebClient aviationstackWebClient(AviationstackProperties properties) {
         HttpClient httpClient = HttpClient.create()
                 .responseTimeout(Duration.ofMillis(properties.getTimeout()));
 

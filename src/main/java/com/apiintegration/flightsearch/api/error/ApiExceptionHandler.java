@@ -9,6 +9,11 @@ import com.apiintegration.flightsearch.infrastructure.provider.flightapi.excepti
 import com.apiintegration.flightsearch.infrastructure.provider.flightapi.exception.FlightApiMalformedResponseException;
 import com.apiintegration.flightsearch.infrastructure.provider.flightapi.exception.FlightApiTimeoutException;
 import com.apiintegration.flightsearch.infrastructure.provider.flightapi.exception.FlightApiUnauthorizedException;
+import com.apiintegration.flightsearch.infrastructure.provider.aviationstack.exception.AviationstackApiException;
+import com.apiintegration.flightsearch.infrastructure.provider.aviationstack.exception.AviationstackDownException;
+import com.apiintegration.flightsearch.infrastructure.provider.aviationstack.exception.AviationstackMalformedResponseException;
+import com.apiintegration.flightsearch.infrastructure.provider.aviationstack.exception.AviationstackTimeoutException;
+import com.apiintegration.flightsearch.infrastructure.provider.aviationstack.exception.AviationstackUnauthorizedException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,22 +30,23 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler({FlightApiUnauthorizedException.class, DuffelUnauthorizedException.class,
-            DuffelAuthenticationException.class})
+            DuffelAuthenticationException.class, AviationstackUnauthorizedException.class})
     public ResponseEntity<ApiError> handleProviderUnauthorized(Exception exception) {
         return response(HttpStatus.BAD_GATEWAY, "Flight provider authentication failed");
     }
 
-    @ExceptionHandler({FlightApiTimeoutException.class, DuffelTimeoutException.class})
+    @ExceptionHandler({FlightApiTimeoutException.class, DuffelTimeoutException.class, AviationstackTimeoutException.class})
     public ResponseEntity<ApiError> handleProviderTimeout(Exception exception) {
         return response(HttpStatus.GATEWAY_TIMEOUT, "Flight provider request timed out");
     }
 
-    @ExceptionHandler({FlightApiDownException.class})
+    @ExceptionHandler({FlightApiDownException.class, AviationstackDownException.class})
     public ResponseEntity<ApiError> handleFlightApiDown(FlightApiDownException exception) {
         return response(HttpStatus.BAD_GATEWAY, "FlightAPI is unavailable");
     }
 
-    @ExceptionHandler({FlightApiException.class, FlightApiMalformedResponseException.class, DuffelApiException.class})
+        @ExceptionHandler({FlightApiException.class, FlightApiMalformedResponseException.class, DuffelApiException.class,
+            AviationstackApiException.class, AviationstackMalformedResponseException.class})
     public ResponseEntity<ApiError> handleProviderFailure(Exception exception) {
         return response(HttpStatus.BAD_GATEWAY, "Flight provider request failed");
     }

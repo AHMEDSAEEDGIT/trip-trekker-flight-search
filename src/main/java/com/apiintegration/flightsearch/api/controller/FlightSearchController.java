@@ -19,7 +19,7 @@ public class FlightSearchController {
 
     private final FlightSearchProvider flightSearchProvider;
 
-    public FlightSearchController(@Qualifier("flightApiService") FlightSearchProvider flightSearchProvider) {
+    public FlightSearchController(@Qualifier("aviationstackService") FlightSearchProvider flightSearchProvider) {
         this.flightSearchProvider = flightSearchProvider;
     }
 

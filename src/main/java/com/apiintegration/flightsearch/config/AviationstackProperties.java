@@ -6,12 +6,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "flight.providers.duffel")
+@ConfigurationProperties(prefix = "flight.providers.aviationstack")
 @Getter
 @Setter
-public class AppProperties {
+public class AviationstackProperties {
     private String baseUrl;
-    private String token;
+    private String apiKey;
     private int timeout;
     private int maxResponseSize;
+
 }
