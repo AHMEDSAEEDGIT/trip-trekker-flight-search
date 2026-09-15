@@ -1,6 +1,6 @@
 package com.apiintegration.flightsearch.infrastructure.provider.duffel;
 
-import com.apiintegration.flightsearch.config.AppProperties;
+import com.apiintegration.flightsearch.config.DuffelProperties;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.dto.DuffelOfferRequestPayload;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.exception.DuffelApiException;
 import com.apiintegration.flightsearch.infrastructure.provider.duffel.exception.DuffelAuthenticationException;
@@ -17,9 +17,9 @@ import java.time.Duration;
 public class DuffelClient {
     private final WebClient duffelWebClient;
     private final DuffelAuthService authService;
-    private final AppProperties properties;
+    private final DuffelProperties properties;
 
-    public DuffelClient(WebClient duffelWebClient, DuffelAuthService authService, AppProperties properties) {
+    public DuffelClient(WebClient duffelWebClient, DuffelAuthService authService, DuffelProperties properties) {
         this.duffelWebClient = duffelWebClient;
         this.authService = authService;
         this.properties = properties;

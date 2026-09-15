@@ -15,6 +15,12 @@ flight:
       api-key: ${FLIGHTAPI_KEY:}
       timeout: 20000
       max-response-size: 10485760
+    aviationstack:
+      base-url: https://api.aviationstack.com/v1
+      api-key: ${AVIATIONSTACK_KEY:}
+      timeout: 20000
+      max-response-size: 10485760
+
 #    amadeus:
 #      base-url: https://test.api.amadeus.com  # Example for Amadeus sandbox
 #      client-id: ${AMADEUS_CLIENT_ID}

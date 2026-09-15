@@ -1,13 +1,13 @@
 package com.apiintegration.flightsearch.infrastructure.provider.duffel;
 
-import com.apiintegration.flightsearch.config.AppProperties;
+import com.apiintegration.flightsearch.config.DuffelProperties;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DuffelAuthService {
-    private final AppProperties properties;
+    private final DuffelProperties properties;
 
-    public DuffelAuthService(AppProperties properties) {
+    public DuffelAuthService(DuffelProperties properties) {
         this.properties = properties;
     }
 
